@@ -1,13 +1,3 @@
-# import requests
-# import json 
-# import flask
-# def Response(name):
-#     obj={"joewish":24,"Vikas":25}
-#     if name=="joewish":
-#         return json.dumps(obj[name])
-#     else:
-#         return "Key not present"
-
 # Using flask to make an api 
 # import necessary libraries and functions 
 from flask import Flask, jsonify, request 
@@ -37,14 +27,29 @@ def disp(num):
 
 @app.route('/name/<string:name>', methods=["GET"])
 def name(name):
-	name=name.lower()
-	obj={"joewish":"joewishvelagapalli@gmailcom","vikas":"vikaslikhy@gmail.com"}
-	if name in obj:
-		return jsonify({"name":name,"email":obj[name]})
+	if authChecker():
+		name=name.lower()
+		obj={"joewish":"joewishvelagapalli@gmailcom","vikas":"vikaslikhy@gmail.com"}
+		if name in obj:
+			return jsonify({"name":name,"email":obj[name]})
 	else:
 		return jsonify({"message":"{0} are not a member, please request for new member sign up".format(name)})
+
+# @app.route('/test/', methods=["GET"])
+def authChecker():
+	auth = str(request.headers.get("Authorization")).split(" ")
+	if auth[0]=="Basic" and checkAuthList(auth[1]):
+		return True
+	else:
+		return False
 	
+
+def checkAuthList(authID):
 	
+	if authID in listOfUsers:
+		return True 
+	else:
+		return False 
 
 
 # driver function 
